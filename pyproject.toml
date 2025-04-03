@@ -4,4 +4,9 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "beautifulsoup4>=4.13.3",
+    "pokemontcgsdk>=3.4.0",
+    "pony>=0.7.19",
+    "requests>=2.32.3",
+]
