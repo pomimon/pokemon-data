@@ -225,7 +225,6 @@ def main():
     fetch_resource("subtypes", root, Subtype.all)
     fetch_resource("rarities", root, Rarity.all)
 
-
     print("> Fetching All Cards")
 
     page = 1
