@@ -5,7 +5,6 @@ import json
 import pprint
 
 from pokemontcgsdk import Card
-
 from pokemontcgsdk import Type
 from pokemontcgsdk import Supertype
 from pokemontcgsdk import Subtype
