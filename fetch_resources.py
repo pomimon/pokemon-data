@@ -10,7 +10,6 @@ from pokemontcgsdk import Supertype
 from pokemontcgsdk import Subtype
 from pokemontcgsdk import Rarity
 
-
 def get_data_dir() -> Path:
     root = Path("/Users/mango/projects/data-analytics/pokemon-data")
     path = root / "data"
