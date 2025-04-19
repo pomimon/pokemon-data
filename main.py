@@ -176,21 +176,21 @@ def main():
   # 2.e. Load card JSON and create database records
   cards = load_json(root_path / "cards.json")
 
-  for card in cards["data"][:5]:
-  # for card in cards["data"][:250]:
-  #   if card["name"] != "Celebi & Venusaur-GX":
-  #     continue
+  # get first 5 cards data
+  # for card in cards["data"][:5]:
 
-    fks = {}
+  # get all card data
+  for card in cards["data"]:
+    relations = {}
 
-    fks["supertype"] = SuperType.find_or_create(name=card["supertype"])
+    relations["supertype"] = SuperType.find_or_create(name=card["supertype"])
 
-    fks["images"] = Image.find_or_create(
+    relations["images"] = Image.find_or_create(
       primary=card["images"]["small"],
       secondary=card["images"]["large"],
     )
 
-    fks["set"] = CardSet.find_or_create(
+    relations["set"] = CardSet.find_or_create(
       setId=card["set"]["id"],
       images=Image.find_or_create(
         primary=card["set"]["images"]["symbol"],
@@ -207,40 +207,40 @@ def main():
     )
 
     if card["rarity"] is not None:
-      fks["rarity"] = Rarity.find_or_create(name=card["rarity"])
+      relations["rarity"] = Rarity.find_or_create(name=card["rarity"])
 
     if card["types"] is not None:
-      fks["types"] = [Type.find_or_create(name=name) for name in card["types"]]
+      relations["types"] = [Type.find_or_create(name=name) for name in card["types"]]
 
     if card["subtypes"] is not None:
-      fks["subtypes"] = [SubType.find_or_create(name=name) for name in card["subtypes"]]
+      relations["subtypes"] = [SubType.find_or_create(name=name) for name in card["subtypes"]]
 
     if card["weaknesses"] is not None:
-      fks["weaknesses"] = []
+      relations["weaknesses"] = []
 
       for weakness in card["weaknesses"]:
         type_ = Type.find_or_create(name=weakness["type"])
         entry = Weakness.find_or_create(type_=type_, value=weakness["value"])
-        fks["weaknesses"].append(entry)
+        relations["weaknesses"].append(entry)
 
     if card["resistances"] is not None:
-      fks["resistances"] = []
+      relations["resistances"] = []
 
       for resistance in card["resistances"]:
         type_ = Type.find_or_create(name=resistance["type"])
         entry = Resistance.find_or_create(type_=type_, value=resistance["value"])
-        fks["resistances"].append(entry)
+        relations["resistances"].append(entry)
 
     if card["abilities"] is not None:
-      fks["abilities"] = []
+      relations["abilities"] = []
 
       for ability in card["abilities"]:
         type_ = AbilityType.find_or_create(name=ability["type"])
         entry = Ability.find_or_create(type_=type_, name=ability["name"], text=ability["text"])
-        fks["abilities"].append(entry)
+        relations["abilities"].append(entry)
 
     if card["attacks"] is not None:
-      fks["attacks"] = []
+      relations["attacks"] = []
 
       for attack in card["attacks"]:
         entity = Attack.find_or_create(
@@ -257,37 +257,37 @@ def main():
             type_=Type.find_or_create(name=name)
           )
 
-        fks["attacks"].append(entity)
+        relations["attacks"].append(entity)
 
-    # print(f"Foreign Keys: {fks}")
+    # print(f"Foreign Keys: {relations}")
 
     Card(
-      abilities=fks.get("abilities", []),
+      abilities=relations.get("abilities", []),
       artist=card["artist"],
       # ancientTrait: Optional[AncientTrait]
-      attacks=fks.get("attacks", []),
+      attacks=relations.get("attacks", []),
       # cardmarket: Optional[Cardmarket]
       convertedRetreatCost=card["convertedRetreatCost"],
       evolvesFrom=card["evolvesFrom"],
       flavorText=card["flavorText"],
       hp=card["hp"],
       cardId=card["id"],
-      images=fks["images"],
+      images=relations["images"],
       # legalities: Legality
       name=card["name"],
       # nationalPokedexNumbers: Optional[List[int]]
       number=card["number"],
-      rarity=fks.get("rarity"),
+      rarity=relations.get("rarity"),
       regulationMark=card["regulationMark"],
-      resistances=fks.get("resistances", []),
+      resistances=relations.get("resistances", []),
       # retreatCost: Optional[List[str]]
       # rules: Optional[List[str]]
-      cardSet=fks["set"],
-      subtypes=fks.get("subtypes", []),
-      supertype=fks["supertype"],
+      cardSet=relations["set"],
+      subtypes=relations.get("subtypes", []),
+      supertype=relations["supertype"],
       # tcgplayer: Optional[TCGPlayer]
-      types=fks.get("types", []),
-      weaknesses=fks.get("weaknesses", []),
+      types=relations.get("types", []),
+      weaknesses=relations.get("weaknesses", []),
     )
 
 
